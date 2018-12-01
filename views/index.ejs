@@ -8,7 +8,53 @@
     <title>Document</title>
 </head>
 <body>
-    <center><h1>Parcial final de PW</h1></center>
-    <form></form>
+    <center>
+        <h1>Parcial final de PW</h1>
+        <form action="" method="post" name="formInsert" id="formInsert">
+            <input type="text" placeholder="Marca">
+            <input type="text" placeholder="Modelo">
+            <input type="text" placeholder="Año">
+            <input type="submit" value="Agregar">
+        </form>
+</center>
+    <center>
+        <table>
+        <thead>
+            <tr>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Año</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody id="filas"></tbody>
+    </table>
+</center>
+    <form>
+
+    </form>
+<script>
+    console.log("Pueba")
+mostrar()
+function mostrar(){
+    fetch('/api/carro', {
+        method: 'GET'
+    }).then(res=>res.json())
+    .then(datos=>{
+        let filas = "";
+        datos.forEach(element => {
+            filas = filas + `
+            <td>${element.marca}</td>
+            <td>${element.modelo}</td>
+            <td>${element.anio}</td>
+            <td><a class="update" href="/api/carro/${element._id}">Actualizar</a> | <a class="delete" href="/api/carro/${element._id}">Eliminar</a></td>
+            </tr>
+            `
+        })
+        document.querySelector("#filas").innerHTML = filas;
+    })    
+}
+
+</script>
 </body>
 </html>
