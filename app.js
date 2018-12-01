@@ -6,7 +6,7 @@ const api = require('./routes')
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.json())
-app.use('/', api)
-app.set('views', path.join(__dirname, 'views'))
+app.use('/api', api)
 app.set('view engine', 'ejs')
+app.set('views', path.join(__dirname, 'views'))
 module.exports = app

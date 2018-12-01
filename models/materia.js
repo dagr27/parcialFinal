@@ -2,8 +2,8 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const carroSchema = Schema({
-    marca: string,
-    modelo: string,
-    anio : int
+    marca: String,
+    modelo: String,
+    anio : Number
 })
 module.exports = mongoose.model('Carro', carroSchema)
