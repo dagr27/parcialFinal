@@ -10,10 +10,10 @@
 <body>
     <center>
         <h1>Parcial final de PW</h1>
-        <form action="" method="post" name="formInsert" id="formInsert">
-            <input type="text" placeholder="Marca">
-            <input type="text" placeholder="Modelo">
-            <input type="text" placeholder="Año">
+        <form method="post" name="formInsert" id="formInsert">
+            <input type="text" placeholder="Marca" name="marca" id="marca">
+            <input type="text" placeholder="Modelo" name="modelo" id="modelo">
+            <input type="text" placeholder="Año" name="anio" id="id">
             <input type="submit" value="Agregar">
         </form>
 </center>
@@ -35,25 +35,64 @@
     </form>
 <script>
     console.log("Pueba")
-mostrar()
-function mostrar(){
-    fetch('/api/carro', {
-        method: 'GET'
-    }).then(res=>res.json())
-    .then(datos=>{
-        let filas = "";
-        datos.forEach(element => {
-            filas = filas + `
-            <td>${element.marca}</td>
-            <td>${element.modelo}</td>
-            <td>${element.anio}</td>
-            <td><a class="update" href="/api/carro/${element._id}">Actualizar</a> | <a class="delete" href="/api/carro/${element._id}">Eliminar</a></td>
-            </tr>
-            `
+    mostrar()
+    function mostrar(){
+        fetch('/api/carro', {
+            method: 'GET'
+        }).then(res=>res.json())
+        .then(datos=>{
+            let filas = "";
+            datos.forEach(element => {
+                filas = filas + `
+                <td>${element.marca}</td>
+                <td>${element.modelo}</td>
+                <td>${element.anio}</td>
+                <td><a class="update" href="/api/carro/${element._id}">Actualizar</a> | <a class="delete" href="/api/carro/${element._id}">Eliminar</a></td>
+                </tr>
+                `
+            })
+            document.querySelector("#filas").innerHTML = filas;
+            let btnUpdate = document.querySelectorAll(".update");
+            btnUpdate.forEach(item => {
+                item.addEventListener("click", function (e){
+                    e.preventDefault();
+                    let url = this["href"];
+                    fetch(url, {
+                        method: 'GET'
+                    }).then(res => res.json())
+                    .catch(err=> console.log(err))
+                    .then(response =>{
+                        /*Aqui van las cajitas*/
+                    })
+                })
+            })
+            let btnDelete = document.querySelectorAll(".delete");
+            btnDelete.forEach(item =>{
+                item.addEventListener("click", function (e){
+                    e.preventDefault();
+                    let url = this["href"];
+                    fetch(url, {
+                        method:'DELETE'
+                    }).then(res => res.json())
+                    .then(response=>{
+                        alert("Se borro esta vaina");
+                        mostrar();
+                    }).catch(err=>{
+                        alert("Errors al borrar esta vaina");
+                    })
+                })
+            })
         })
-        document.querySelector("#filas").innerHTML = filas;
-    })    
-}
+    }
+    document.querySelector("#formInsert").addEventListener('submit', e=>{
+        console.log("Se hizo click")
+        e.preventDefault();
+        let datos =  {
+            marca : document.forms.formInsert.marca.value,
+            modelo : document.forms.formInsert.modelo.value,
+            anio : document.forms.formINsert.anio.value
+        }
+    })
 
 </script>
 </body>
