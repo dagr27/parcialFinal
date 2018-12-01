@@ -4,23 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <title>Document</title>
+    <title>Mantenimiento</title>
 </head>
 <body>
     <center>
-        <h1>Parcial final de PW</h1>
-        <form method="post" name="formInsert" id="formInsert">
-            <input type="text" placeholder="Marca" name="marca" id="marca">
-            <input type="text" placeholder="Modelo" name="modelo" id="modelo">
-            <input type="text" placeholder="Año" name="anio" id="id">
-            <input type="submit" value="Agregar">
+        <h1>Administrador de componentes de carro</h1>
+        <form method="post" name="formInsert" id="formInsert" class="form-inline" style="justify-content:center;">
+            <input class="form-control" type="text" placeholder="Marca" name="marca" id="marca">
+            <input class="form-control" type="text" placeholder="Modelo" name="modelo" id="modelo">
+            <input class="form-control" type="text" placeholder="Año" name="anio" id="id">
+            <input type="submit" value="Agregar" class="btn btn-success">
         </form>
 </center>
     <center>
-        <table>
+        <table class="table table-hover" style="width:80%; margin:15px">
         <thead>
             <tr>
+                <th>Id</th>
                 <th>Marca</th>
                 <th>Modelo</th>
                 <th>Año</th>
@@ -30,12 +32,22 @@
         <tbody id="filas"></tbody>
     </table>
 </center>
-    <form>
-
+<h2 align="center">Seccion de Actualizar</h2>
+<form method="" name="formUpdate" id="formUpdate" class="form-inline" style="justify-content:center;">
+        <input class="form-control" type="text" placeholder="Id" name="ids" id="ids" disabled>
+        <input class="form-control" type="text" placeholder="Marca" name="marca" id="marca">
+        <input class="form-control" type="text" placeholder="Modelo" name="modelo" id="modelo">
+        <input class="form-control" type="text" placeholder="Año" name="anio" id="anio">
+        <input type="submit" value="Modificar" class="btn btn-warning" style="color:white">
     </form>
 <script>
     console.log("Pueba")
     mostrar()
+    function limpiar(){
+        document.formInsert.marca.value= "";
+        document.formInsert.modelo.value= "";
+        document.formInsert.marca.anio= "";
+    }
     function mostrar(){
         fetch('/api/carro', {
             method: 'GET'
@@ -44,10 +56,11 @@
             let filas = "";
             datos.forEach(element => {
                 filas = filas + `
+                <td>${element._id}</td>
                 <td>${element.marca}</td>
                 <td>${element.modelo}</td>
                 <td>${element.anio}</td>
-                <td><a class="update" href="/api/carro/${element._id}">Actualizar</a> | <a class="delete" href="/api/carro/${element._id}">Eliminar</a></td>
+                <td><a class="update" href="/api/carro/${element._id}"><i class="far fa-edit"></i></a> | <a class="delete" href="/api/carro/${element._id}"><i class="far fa-minus-square"></i></a></td>
                 </tr>
                 `
             })
@@ -62,7 +75,11 @@
                     }).then(res => res.json())
                     .catch(err=> console.log(err))
                     .then(response =>{
-                        /*Aqui van las cajitas*/
+                        console.log(response)
+                        document.forms.formUpdate.ids.value = response.carro._id,
+                        document.forms.formUpdate.marca.value = response.carro.marca,
+                        document.forms.formUpdate.modelo.value = response.carro.modelo,
+                        document.forms.formUpdate.anio.value = response.carro.anio
                     })
                 })
             })
@@ -90,8 +107,53 @@
         let datos =  {
             marca : document.forms.formInsert.marca.value,
             modelo : document.forms.formInsert.modelo.value,
-            anio : document.forms.formINsert.anio.value
+            anio : document.forms.formInsert.anio.value
         }
+        console.log(datos)
+        fetch('/api/carro', {
+            method: 'POST',
+            body: JSON.stringify(datos),
+            headers:{
+                'Content-type' : 'application/json'
+            }
+        }).then(res => res.json())
+        .then(response => {
+            alert("Dato insertado")
+            limpiar()
+            mostrar()
+
+        }).catch(err=>{
+            alert("No se pudo insertar");
+            console.log(err);
+        })
+
+    })
+
+    document.querySelector("#formUpdate").addEventListener('submit', e=>{
+        console.log("Se hizo click")
+        let datos =  {
+            id: document.forms.formUpdate.ids.value,
+            marca : document.forms.formUpdate.marca.value,
+            modelo : document.forms.formUpdate.modelo.value,
+            anio : document.forms.formUpdate.anio.value
+        }
+        e.preventDefault();
+        fetch('/api/carro/'+datos.id, {
+            method: 'PUT',
+            body: JSON.stringify(datos),
+            headers:{
+                'Content-type' : 'application/json'
+            }
+        }).then(res => res.json())
+        .then(response => {
+            alert("Dato Actualizado")
+            mostrar()
+
+        }).catch(err=>{
+            alert("No se pudo insertar");
+            console.log(err);
+        })
+
     })
 
 </script>

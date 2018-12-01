@@ -25,7 +25,6 @@ async function deleteCarros(req, res){
         carro.remove(err=>{
             if(err) return res.status(500).send({message:`Error al borrar ${err}`})
             res.status(200).json({message: 'Se borro'})
-            res.status(200).send({message: 'Se borro'})
            
         })
     })
